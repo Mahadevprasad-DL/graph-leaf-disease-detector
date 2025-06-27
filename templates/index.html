@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitiScanLite - Grape Leaf Diagnosis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* CSS Variables for better maintainability */
+        :root {
+            --primary-green: #388E3C; /* Deeper, richer green */
+            --light-green: #E8F5E9; /* Very light green for backgrounds */
+            --dark-text: #212121; /* Darker text for contrast */
+            --medium-text: #424242;
+            --light-bg: #F5F5F5; /* Off-white background */
+            --white: #FFFFFF;
+            --button-hover: #2E7D32; /* Darker green on hover */
+            --border-color: #BDBDBD; /* Lighter border */
+            --error-red: #D32F2F;
+            --shadow-light: rgba(0, 0, 0, 0.08);
+            --shadow-medium: rgba(0, 0, 0, 0.15);
+            --shadow-strong: rgba(0, 0, 0, 0.25);
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--light-bg);
+            margin: 0;
+            padding: 0;
+            color: var(--medium-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: var(--white);
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 15px 40px var(--shadow-medium);
+            max-width: 850px; /* Increased max-width for laptop screens */
+            width: 90%;
+            text-align: center;
+            animation: fadeIn 1s ease-out; /* Fade-in effect */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-green);
+            font-size: 3.5em; /* Larger title */
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            color: var(--dark-text);
+            margin-bottom: 35px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px; /* Spacing between elements */
+            margin-bottom: 40px;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        input[type="file"] {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .custom-file-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed var(--border-color);
+            border-radius: 10px;
+            padding: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 150px;
+            background-color: var(--white);
+            font-size: 1.1em;
+            color: var(--medium-text);
+        }
+
+        .custom-file-upload:hover {
+            border-color: var(--primary-green);
+            background-color: var(--light-green);
+            box-shadow: 0 8px 20px var(--shadow-light);
+        }
+
+        .custom-file-upload i {
+            font-size: 3em;
+            color: var(--primary-green);
+            margin-bottom: 15px;
+        }
+
+        .custom-file-upload span {
+            display: block;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .file-name {
+            margin-top: 15px;
+            font-size: 0.95em;
+            color: var(--dark-text);
+            font-weight: bold;
+            display: block;
+        }
+
+        button[type="submit"] {
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 15px 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 15px var(--shadow-light);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background: var(--button-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px var(--shadow-medium);
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-weight: bold;
+            margin-top: 25px;
+            background: #FFEBEE; /* Light red background */
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--error-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-section {
+            margin-top: 40px;
+            background: var(--light-green);
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px var(--shadow-light);
+            text-align: left;
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 30px;
+            align-items: flex-start;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .result-info {
+            flex: 1;
+            min-width: 280px; /* Minimum width before wrapping */
+        }
+
+        .result-info h3 {
+            color: var(--primary-green);
+            font-size: 2.2em;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-green);
+            font-weight: 700;
+        }
+
+        .result-info p {
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            color: var(--dark-text);
+            line-height: 1.6;
+        }
+
+        .result-info strong {
+            color: var(--primary-green);
+            font-weight: 700;
+        }
+
+        .result-image-wrapper {
+            flex: 1;
+            min-width: 280px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-image-wrapper img {
+            max-width: 100%;
+            height: auto;
+            border: 4px solid var(--primary-green);
+            border-radius: 10px;
+            box-shadow: 0 8px 20px var(--shadow-medium);
+            transition: transform 0.3s ease;
+        }
+
+        .result-image-wrapper img:hover {
+            transform: scale(1.02); /* Slight zoom on hover */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px;
+                width: 95%;
+                margin: 20px auto;
+            }
+            header h1 {
+                font-size: 2.5em;
+            }
+            header p {
+                font-size: 1em;
+            }
+            .custom-file-upload {
+                min-height: 120px;
+                padding: 20px;
+            }
+            .custom-file-upload i {
+                font-size: 2.5em;
+            }
+            button[type="submit"] {
+                font-size: 1.1em;
+                padding: 12px 25px;
+            }
+            .result-section {
+                flex-direction: column; /* Stack elements vertically */
+                align-items: center;
+                padding: 25px;
+            }
+            .result-info, .result-image-wrapper {
+                min-width: unset; /* Remove min-width for stacking */
+                width: 100%;
+            }
+            .result-info h3 {
+                font-size: 1.8em;
+                text-align: center;
+            }
+            .result-info p {
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            header h1 {
+                font-size: 2em;
+            }
+            .custom-file-upload {
+                padding: 15px;
+                font-size: 0.9em;
+            }
+            .custom-file-upload i {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>VitiScanLite <i class="fas fa-leaf" style="color: var(--primary-green);"></i></h1>
+            <p>Upload an image of a grape leaf, and let our AI diagnose potential diseases to help you maintain a healthy vineyard.</p>
+        </header>
+
+        <form method="POST" enctype="multipart/form-data" class="upload-section">
+            <div class="file-upload-wrapper">
+                <input type="file" name="image" id="imageUpload" required onchange="displayFileName(this)">
+                <label for="imageUpload" class="custom-file-upload">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Drag & Drop your leaf image here or <strong>Click to Browse</strong>
+                    <span id="fileNameDisplay" class="file-name"></span>
+                </label>
+            </div>
+            <button type="submit">
+                <i class="fas fa-microscope"></i> Diagnose Leaf
+            </button>
+        </form>
+
+        {% if error %}
+            <p class="error-message">
+                <i class="fas fa-exclamation-triangle"></i> {{ error }}
+            </p>
+        {% endif %}
+
+        {% if result %}
+            <div class="result-section">
+                <div class="result-info">
+                    <h3>Diagnosis: <span style="color: var(--dark-text);">{{ result }}</span></h3>
+                    <p><strong>Suggested Cure:</strong> {{ cure }}</p>
+                    <p><strong>Confidence:</strong> {{ confidence }}%</p>
+                </div>
+                <div class="result-image-wrapper">
+                    <img src="{{ image_url }}" alt="Uploaded Grape Leaf Image">
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function displayFileName(input) {
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+            if (input.files && input.files[0]) {
+                fileNameDisplay.textContent = input.files[0].name;
+            } else {
+                fileNameDisplay.textContent = '';
+            }
+        }
+    </script>
+</body>
+</html>
