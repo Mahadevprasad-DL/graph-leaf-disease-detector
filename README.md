@@ -37,12 +37,24 @@ An intelligent system to detect diseases in graph leaves using a Convolutional N
 
 ---
 
-### 🔧 Backend Setup
 
-```bash
-cd backend
-pip install -r requirements.txt
-python app.py
+
+
+### Dataset Notice
+❗ Sorry, I cannot upload the datasets used for:
+
+- Training/Testing Graph Leaf Images
+
+- Non-leaf Irrelevant Images (e.g., bike, bus, etc.)
+
+
+# 💻 MPcodeCrafter – Freelancer Portfolio Website
+
+Welcome to **MPcodeCrafter**, a personal freelancer website built to showcase my professional web development and coding services. This portfolio is designed with simplicity, responsiveness, and accessibility in mind.
+
+🌐 **Live Demo:** [MPcodeCrafter Website](https://mpcodecrafter.free.nf/?i=1)
 
 ---
+
+
 
